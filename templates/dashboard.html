@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Главная – Lovina</title>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #ffd3e8 0, #ffe6f2 30%, #ffffff 70%);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        .site-header {
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo { display: flex; align-items: center; gap: 8px; }
+        .logo-heart {
+            width: 28px;
+            height: 28px;
+            background: #ff4f8b;
+            border-radius: 50% 50% 42% 58%;
+            box-shadow: 0 6px 16px rgba(255, 79, 139, 0.4);
+        }
+        .logo-title { font-weight: 700; font-size: 22px; color: #ff2f76; }
+
+        .header-right { text-align: right; font-size: 13px; color: #777; }
+
+        .navbar { margin-top: 6px; }
+
+        .nav-link {
+            font-size: 14px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.8);
+            border: 1px solid rgba(255,200,230,0.7);
+        }
+
+        .dashboard {
+            flex: 1;
+            padding: 40px 24px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .welcome-title {
+            font-size: 34px;
+            font-weight: 800;
+            color: #ff2f76;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .welcome-subtitle {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        /* Кнопки */
+        .quick-actions {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .action-card {
+            width: 220px;
+            background: rgba(255,255,255,0.4);
+            backdrop-filter: blur(6px);
+            border-radius: 22px;
+            padding: 22px;
+            border: 1px solid #ffcae3;
+            text-align: center;
+            transition: .25s;
+        }
+
+        .action-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 32px rgba(255, 79, 139, 0.20);
+        }
+
+        .action-image {
+            width: 100%;
+            height: 140px;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 14px;
+        }
+
+        .action-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .action-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ff2f76;
+            margin-bottom: 6px;
+        }
+
+        /* Недавние симпатии */
+        .matches-title {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            color: #ff2f76;
+            margin-bottom: 15px;
+        }
+
+        .matches-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .match-preview {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255,255,255,0.35);
+            padding: 12px;
+            border-radius: 16px;
+            border: 1px solid #ffd6e8;
+        }
+
+        .match-photo {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .match-info { flex: 1; }
+        .match-name { font-weight: 600; color: #ff2f76; }
+        .match-about { font-size: 12px; color: #666; }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff7bab, #ff2f76);
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: white;
+        }
+
+        .no-matches {
+            text-align: center;
+            color: #666;
+            padding: 20px;
+            font-style: italic;
+        }
+    </style>
+    <link rel="icon" type="image/png"
+      href="{{ url_for('static', filename='favicon.png') }}">
+
+    <link rel="shortcut icon"
+        href="{{ url_for('static', filename='favicon.png') }}">
+
+    <link rel="apple-touch-icon"
+        href="{{ url_for('static', filename='favicon.png') }}">
+
+</head>
+
+<body>
+
+<header class="site-header">
+    <div class="logo">
+        <div class="logo-heart"></div>
+        <div class="logo-title">Lovina</div>
+    </div>
+
+    <div class="header-right">
+        <div>{{ student_fio }}</div>
+        <div>{{ student_group }}</div>
+        <nav class="navbar">
+            <a class="nav-link" href="{{ url_for('logout') }}">Выход</a>
+        </nav>
+    </div>
+</header>
+
+
+<div class="dashboard">
+
+    <h1 class="welcome-title">С возвращением!</h1>
+    <p class="welcome-subtitle">Рады видеть вас снова в Lovina</p>
+
+    <div class="quick-actions">
+
+        <!-- Поиск -->
+        <a href="{{ url_for('search') }}" class="action-card">
+            <div class="action-image">
+                <img src="{{ url_for('static', filename='uploads/картинка4.png') }}">
+            </div>
+            <div class="action-title">Поиск</div>
+        </a>
+
+        <!-- Моя анкета -->
+        <a href="{{ url_for('profile_view') }}" class="action-card">
+            <div class="action-image">
+                <img src="{{ url_for('static', filename='uploads/картинка3.png') }}">
+            </div>
+            <div class="action-title">Моя анкета</div>
+        </a>
+
+        <!-- Симпатии -->
+        <a href="{{ url_for('matches') }}" class="action-card">
+            <div class="action-image">
+                <img src="{{ url_for('static', filename='uploads/kar1.png') }}">
+            </div>
+            <div class="action-title">Симпатии</div>
+        </a>
+
+    </div>
+
+
+    <!-- Недавние симпатии -->
+    <h3 class="matches-title">Недавние симпатии</h3>
+
+    {% if matches %}
+        <div class="matches-list">
+            {% for match in matches %}
+            <div class="match-preview">
+                {% if match.photo_filename %}
+                    <img src="{{ url_for('static', filename='uploads/' ~ match.photo_filename) }}"
+                         class="match-photo">
+                {% else %}
+                    <img src="{{ url_for('static', filename='uploads/placeholder.png') }}"
+                         class="match-photo">
+                {% endif %}
+
+                <div class="match-info">
+                    <div class="match-name">{{ match.name }}, {{ match.age }}</div>
+                    <div class="match-about">{{ match.about[:45] }}...</div>
+                </div>
+
+                <a class="btn-primary" href="{{ url_for('chat', user_id=match.user_id) }}">
+                    Чат
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+
+    {% else %}
+        <div class="no-matches">У вас пока нет взаимных симпатий</div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>

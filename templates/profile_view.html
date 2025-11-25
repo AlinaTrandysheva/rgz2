@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+{% block title %}Моя анкета – Lovina{% endblock %}
+
+{% block content %}
+<style>
+.card {
+    max-width: 800px !important;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.profile-view-main {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    margin-bottom: 25px;
+}
+
+.profile-view-photo {
+    flex: 0 0 180px;
+    display: flex;
+    justify-content: center;
+}
+
+.profile-view-img {
+    width: 180px;
+    height: 180px;
+    border-radius: 35px;
+    object-fit: cover;
+    box-shadow: 0 15px 35px rgba(255, 80, 140, 0.4);
+}
+
+.profile-view-placeholder {
+    width: 180px;
+    height: 180px;
+    border-radius: 35px;
+    background: linear-gradient(135deg, #ff7bab, #ff2f76);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 64px;
+    font-weight: 700;
+    color: #fff;
+    box-shadow: 0 15px 35px rgba(255, 80, 140, 0.4);
+}
+
+.profile-view-info {
+    flex: 1;
+}
+
+.profile-view-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ff2f76;
+    margin-bottom: 10px;
+}
+
+.profile-view-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.profile-view-about {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.6;
+    padding: 15px;
+    background: #fff9fc;
+    border-radius: 20px;
+    border: 1px solid #ffd5e9;
+}
+
+.profile-view-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.profile-view-btn {
+    min-width: 200px;
+    padding: 12px 20px;
+    font-size: 15px;
+}
+
+@media (max-width: 600px) {
+    .profile-view-main {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 20px;
+    }
+    
+    .profile-view-info {
+        width: 100%;
+    }
+    
+    .profile-view-tags {
+        justify-content: center;
+    }
+    
+    .profile-view-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .profile-view-btn {
+        width: 100%;
+        max-width: 280px;
+    }
+}
+
+.page-inner {
+    grid-template-columns: 1fr !important;
+}
+
+.side-panel {
+    display: none !important;
+}
+</style>
+
+<h1 class="card-title">Моя анкета</h1>
+<p class="card-subtitle">
+    Здесь можно посмотреть, как твою анкету видят другие пользователи.
+</p>
+
+{% if profile %}
+<div class="profile-view">
+
+    <div class="profile-view-main">
+        <div class="profile-view-photo">
+            {% if profile.photo_filename %}
+                <img src="{{ url_for('static', filename='uploads/' ~ profile.photo_filename) }}"
+                     alt="Фото профиля"
+                     class="profile-view-img">
+            {% else %}
+                <div class="profile-view-placeholder">
+                    {{ profile.name[0] if profile.name }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="profile-view-info">
+            <div class="profile-view-name">
+                {{ profile.name }}, {{ profile.age }}
+            </div>
+
+            <div class="profile-view-tags">
+                <span class="tag">
+                    {% if profile.gender == 'F' %}Девушка{% else %}Парень{% endif %}
+                </span>
+                <span class="tag">
+                    Ищет:
+                    {% if profile.looking_for == 'F' %}девушку{% else %}парня{% endif %}
+                </span>
+                {% if profile.is_hidden %}
+                    <span class="tag tag-muted">Скрыта из поиска</span>
+                {% else %}
+                    <span class="tag tag-success">Видна в поиске</span>
+                {% endif %}
+            </div>
+
+            {% if profile.about %}
+            <div class="profile-view-about">
+                {{ profile.about }}
+            </div>
+            {% else %}
+            <div class="profile-view-about muted">
+                Ты ещё не написал(-а) о себе. Добавь пару фраз, чтобы рассказать о себе чуть больше.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="profile-view-actions">
+        <a href="{{ url_for('edit_profile') }}" class="btn btn-outline profile-view-btn">
+            Редактировать анкету
+        </a>
+
+        <form action="{{ url_for('hide_profile') }}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-primary profile-view-btn">
+                {% if profile.is_hidden %}Показать в поиске{% else %}Скрыть из поиска{% endif %}
+            </button>
+        </form>
+
+        <form action="{{ url_for('delete_account') }}" method="post" style="display:inline;"
+              onsubmit="return confirm('Точно удалить аккаунт и анкету? Это действие нельзя отменить.');">
+            <button type="submit" class="btn btn-danger profile-view-btn">
+                Удалить аккаунт
+            </button>
+        </form>
+    </div>
+</div>
+{% else %}
+<p class="index-status">Анкета ещё не заполнена.</p>
+{% endif %}
+
+{% endblock %}
+
+{% block side %}
+{% endblock %}

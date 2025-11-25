@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Взаимные симпатии – Lovina{% endblock %}
+
+{% block content %}
+<h2 class="card-title">Взаимные симпатии</h2>
+<p class="card-subtitle">
+    Вы понравились друг другу! Можете начать общение.
+</p>
+
+{% if matches %}
+    <div class="matches-list">
+        {% for match in matches %}
+            <div class="match-card">
+                <div class="match-photo">
+                    {% if match.photo_filename %}
+                        <img src="{{ url_for('static', filename='uploads/' ~ match.photo_filename) }}"
+                             alt="{{ match.name }}">
+                    {% else %}
+                        <div class="match-photo-placeholder">
+                            {{ match.name[0] }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="match-info">
+                    <h3>{{ match.name }}, {{ match.age }}</h3>
+                    {% if match.about %}
+                        <p class="match-about">{{ match.about }}</p>
+                    {% endif %}
+                    <a href="{{ url_for('chat', user_id=match.user_id) }}" 
+                       class="btn btn-primary">
+                        💌 Написать сообщение
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="index-status">У вас пока нет взаимных симпатий.</p>
+{% endif %}
+
+<style>
+.matches-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.match-card {
+    display: flex;
+    gap: 16px;
+    padding: 20px;
+    background: #fff9fc;
+    border-radius: 20px;
+    border: 1px solid #ffd5e9;
+}
+
+.match-photo img, .match-photo-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    object-fit: cover;
+}
+
+.match-photo-placeholder {
+    background: linear-gradient(135deg, #ff7bab, #ff2f76);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+    font-weight: bold;
+}
+
+.match-info {
+    flex: 1;
+}
+
+.match-info h3 {
+    color: #ff2f76;
+    margin-bottom: 8px;
+}
+
+.match-about {
+    color: #666;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+</style>
+{% endblock %}

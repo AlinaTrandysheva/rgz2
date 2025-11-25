@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}Моя анкета – Lovina{% endblock %}
+
+{% block content %}
+<h2 class="card-title">Моя анкета</h2>
+<p class="card-subtitle">Расскажи о себе, чтобы совпадения были точнее.</p>
+
+<form method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label class="form-label">Имя</label>
+        <input
+            class="form-input"
+            name="name"
+            value="{{ profile.name if profile else '' }}"
+            required
+            maxlength="50"
+        >
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Возраст</label>
+        <input
+            class="form-input"
+            name="age"
+            type="number"
+            min="18"
+            max="80"
+            required
+            value="{{ profile.age if profile else '' }}"
+        >
+    </div>
+
+    <div class="form-group form-inline">
+        <div style="flex:1">
+            <label class="form-label">Я</label>
+            <select class="form-select" name="gender" required>
+                <option value="M"
+                    {% if profile and profile.gender == 'M' %}selected{% endif %}>
+                    Парень
+                </option>
+                <option value="F"
+                    {% if profile and profile.gender == 'F' %}selected{% endif %}>
+                    Девушка
+                </option>
+            </select>
+        </div>
+
+        <div style="flex:1">
+            <label class="form-label">Ищу</label>
+            <select class="form-select" name="looking_for" required>
+                <option value="M"
+                    {% if profile and profile.looking_for == 'M' %}selected{% endif %}>
+                    Парня
+                </option>
+                <option value="F"
+                    {% if profile and profile.looking_for == 'F' %}selected{% endif %}>
+                    Девушку
+                </option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">О себе</label>
+        <textarea
+            class="form-textarea"
+            name="about"
+            rows="4"
+            maxlength="1000"
+        >{{ profile.about if profile else '' }}</textarea>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Фотография</label>
+        <input
+            class="form-input"
+            type="file"
+            name="photo"
+            accept=".png,.jpg,.jpeg,.gif"
+        >
+    </div>
+
+    {% if profile and profile.photo_filename %}
+        <div class="form-group">
+            <img
+                class="profile-photo"
+                src="{{ url_for('static', filename='uploads/' ~ profile.photo_filename) }}"
+            >
+        </div>
+    {% endif %}
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Сохранить анкету</button>
+    </div>
+</form>
+
+{% if profile %}
+    <div class="form-group">
+        <form method="post" action="{{ url_for('hide_profile') }}">
+            <button type="submit" class="btn btn-outline">
+                {% if profile.is_hidden %}
+                    Сделать анкету видимой
+                {% else %}
+                    Скрыть анкету из поиска
+                {% endif %}
+            </button>
+        </form>
+    </div>
+
+    <div class="form-group">
+        <form method="post" action="{{ url_for('delete_account') }}"
+              onsubmit="return confirm('Точно удалить аккаунт безвозвратно?');">
+            <button type="submit" class="btn btn-danger">Удалить аккаунт</button>
+        </form>
+    </div>
+{% endif %}
+{% endblock %}

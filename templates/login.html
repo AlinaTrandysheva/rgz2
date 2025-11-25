@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Вход – Lovina{% endblock %}
+
+{% block content %}
+<h2 class="card-title">Вход в аккаунт</h2>
+<p class="card-subtitle">Продолжи знакомиться с новыми людьми.</p>
+
+<form method="post">
+    <div class="form-group">
+        <label class="form-label">Логин</label>
+        <input
+            class="form-input"
+            name="username"
+            required
+            minlength="3"
+            maxlength="30"
+            pattern="[A-Za-z0-9_.-]+"
+        >
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Пароль</label>
+        <input
+            class="form-input"
+            type="password"
+            name="password"
+            required
+            minlength="6"
+            maxlength="50"
+        >
+    </div>
+
+    <button type="submit" class="btn btn-primary">Войти</button>
+</form>
+{% endblock %}

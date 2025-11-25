@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}Регистрация – Lovina{% endblock %}
+
+{% block content %}
+<h1 class="card-title">Регистрация</h1>
+<p class="card-subtitle">
+    Создай аккаунт и анкету за один шаг, чтобы сразу начать поиск.
+</p>
+
+<form method="post" enctype="multipart/form-data">
+
+    <div class="form-group">
+        <label class="form-label" for="username">Логин</label>
+        <input
+            class="form-input"
+            type="text"
+            id="username"
+            name="username"
+            value="{{ form_data.username or '' }}"
+            required
+            placeholder="Только латинские буквы и цифры">
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="password">Пароль</label>
+        <input
+            class="form-input"
+            type="password"
+            id="password"
+            name="password"
+            required
+            placeholder="Минимум 6 символов, буква и цифра">
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="password2">Повторите пароль</label>
+        <input
+            class="form-input"
+            type="password"
+            id="password2"
+            name="password2"
+            required>
+    </div>
+
+    <hr style="border:none;border-top:1px solid #ffe0f0;margin:10px 0 14px;">
+    
+    <div class="form-group">
+        <label class="form-label" for="name">Имя</label>
+        <input
+            class="form-input"
+            type="text"
+            id="name"
+            name="name"
+            value="{{ form_data.name or '' }}"
+            required>
+    </div>
+
+    <div class="form-group form-inline">
+        <div style="flex:1;">
+            <label class="form-label" for="age">Возраст</label>
+            <input
+                class="form-input"
+                type="number"
+                id="age"
+                name="age"
+                min="{{ MIN_AGE }}"
+                max="{{ MAX_AGE }}"
+                value="{{ form_data.age or '' }}"
+                required>
+        </div>
+        <div style="flex:1;">
+            <label class="form-label" for="gender">Ваш пол</label>
+            <select class="form-select" id="gender" name="gender" required>
+                <option value="" disabled {% if not form_data.gender %}selected{% endif %}>Выберите</option>
+                <option value="F" {% if form_data.gender == 'F' %}selected{% endif %}>Девушка</option>
+                <option value="M" {% if form_data.gender == 'M' %}selected{% endif %}>Парень</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="looking_for">Кого вы ищете</label>
+        <select class="form-select" id="looking_for" name="looking_for" required>
+            <option value="" disabled {% if not form_data.looking_for %}selected{% endif %}>Выберите</option>
+            <option value="F" {% if form_data.looking_for == 'F' %}selected{% endif %}>Девушку</option>
+            <option value="M" {% if form_data.looking_for == 'M' %}selected{% endif %}>Парня</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="about">О себе (необязательно)</label>
+        <textarea
+            class="form-textarea"
+            id="about"
+            name="about"
+            placeholder="Пару предложений о себе">{{ form_data.about or '' }}</textarea>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="photo">Фотография (необязательно)</label>
+        <input
+            class="form-input"
+            type="file"
+            id="photo"
+            name="photo"
+            accept="image/*">
+        <p style="font-size:12px;color:#888;margin-top:4px;">
+            Разрешены JPG, PNG, GIF. Размер до 2 МБ.
+        </p>
+    </div>
+
+    <button type="submit" class="btn btn-primary" style="width:100%;margin-top:6px;">
+        Зарегистрироваться
+    </button>
+
+    <p style="font-size:13px;color:#777;margin-top:10px;text-align:center;">
+        Уже есть аккаунт? <a href="{{ url_for('login') }}">Войти</a>
+    </p>
+
+</form>
+{% endblock %}

@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Lovina – найди свою пару</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #ffd3e8 0, #ffe6f2 30%, #ffffff 70%);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a {
+            color: #ff4f8b;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* шапка */
+        .site-header {
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-heart {
+            width: 28px;
+            height: 28px;
+            background: #ff4f8b;
+            border-radius: 50% 50% 42% 58%;
+            box-shadow: 0 6px 16px rgba(255, 79, 139, 0.4);
+        }
+
+        .logo-title {
+            font-weight: 700;
+            font-size: 22px;
+            color: #ff2f76;
+        }
+
+        .header-right {
+            text-align: right;
+            font-size: 13px;
+            color: #777;
+        }
+
+        .navbar {
+            margin-top: 6px;
+        }
+
+        .nav-link {
+            font-size: 14px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 200, 230, 0.7);
+        }
+
+        .nav-link:hover {
+            background: #ffedf6;
+        }
+
+        /* общий контейнер для «экранов» */
+        .landing-wrapper {
+            flex: 1;
+        }
+
+        .screen {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px 80px;
+        }
+
+        .screen-inner {
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        .screen:first-child {
+            min-height: 50vh;
+            padding-top: 10px;
+            align-items: flex-start;
+            padding-bottom: 10px;
+        }
+
+        .screen:first-child .hero-layout {
+            margin-top: 0;
+        }
+
+        /* экран 1 */
+        .hero-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+            gap: 32px;
+            align-items: center;
+        }
+
+        @media (max-width: 850px) {
+            .hero-layout {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
+
+        .hero-title {
+            font-size: 52px;
+            line-height: 1.1;
+            font-weight: 800;
+            color: #ff2f76;
+            margin-bottom: 10px;
+        }
+
+        .hero-tagline {
+            font-size: 20px;
+            color: #555;
+            margin-bottom: 18px;
+        }
+
+        .hero-text {
+            font-size: 15px;
+            color: #666;
+            max-width: 460px;
+        }
+
+        .hero-image-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-image {
+            max-width: 420px;
+            width: 100%;
+            display: block;
+            background: transparent;
+            border-radius: 0;
+            transform-origin: center center;
+            animation: heart-beat 1.2s ease-in-out infinite;
+        }
+        @keyframes heart-beat {
+            0%   { transform: scale(1); }
+            20%  { transform: scale(1.08); }
+            40%  { transform: scale(0.97); }
+            60%  { transform: scale(1.05); }
+            80%  { transform: scale(0.99); }
+            100% { transform: scale(1); }
+        }
+
+        /* экран 2 – о приложении */
+        .about-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+            gap: 32px;
+            align-items: center;
+        }
+
+        @media (max-width: 850px) {
+            .about-layout {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #ff2f76;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .section-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .section-text p + p {
+            margin-top: 10px;
+        }
+
+        .about-image-box {
+            display: flex;
+            justify-content: center;
+        }
+
+        .phone-mock {
+            width: 260px;
+            height: 540px;
+            background: #000;
+            border-radius: 40px;
+            padding: 12px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+            position: relative;
+            border: 3px solid #333;
+        }
+
+        .phone-mock::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: #333;
+            border-radius: 2px;
+        }
+
+        .phone-inner {
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .phone-header {
+            background: linear-gradient(135deg, #ff7bab, #ff2f76);
+            color: white;
+            padding: 25px 15px 15px;
+            text-align: center;
+            position: relative;
+        }
+
+        .phone-app-name {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .phone-typing {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 8px;
+            display: block;
+        }
+
+        .dot {
+            display: inline-block;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 1px;
+            animation: typing 1.4s infinite;
+        }
+
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { opacity: 0.3; }
+            30% { opacity: 1; }
+        }
+
+        .phone-chat {
+            flex: 1;
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .chat-bubble {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            position: relative;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: messageAppear 0.5s ease-out forwards;
+        }
+
+        .chat-in {
+            background: #f0f0f0;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+            animation-delay: 0.3s;
+        }
+
+        .chat-out {
+            background: linear-gradient(135deg, #ff7bab, #ff2f76);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes messageAppear {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* сетка для возможностей */
+        .features-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-top: 40px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .feature-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: #fff9fc;
+            border-radius: 20px;
+            padding: 35px 30px;
+            border: 1px solid #ffd5e9;
+            box-shadow: 0 8px 25px rgba(255, 120, 160, 0.15);
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #ff7bab, #ff2f76);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(255, 120, 160, 0.3);
+            z-index: 10;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            background: transparent;
+        }
+
+        .feature-card:hover .feature-image {
+            box-shadow: 0 10px 25px rgba(255, 79, 139, 0.4);
+        }
+
+        .feature-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .feature-content {
+            flex: 1;
+        }
+
+        .feature-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ff2f76;
+            margin-bottom: 12px;
+        }
+
+        .feature-text {
+            font-size: 15px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        /* адаптивность */
+        @media (max-width: 768px) {
+            .feature-row {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .feature-card {
+                padding: 24px 20px;
+            }
+            
+            .feature-image {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .phone-mock {
+                width: 220px;
+                height: 460px;
+                border-radius: 35px;
+            }
+        }
+
+        /* закреплённая панель с кнопками */
+        .sticky-authbar {
+            position: fixed;
+            left: 50%;
+            bottom: 18px;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 999px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+            padding: 6px 10px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 9px 18px;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: transform 0.08s ease, box-shadow 0.12s ease, background 0.12s ease;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff7bab, #ff2f76);
+            color: #fff;
+            box-shadow: 0 8px 18px rgba(255, 79, 139, 0.45);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 22px rgba(255, 79, 139, 0.55);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #ff2f76;
+            border: 1px solid #ffc1dd;
+        }
+
+        .btn-outline:hover {
+            background: #ffe9f4;
+        }
+
+        /* анимации для появления элементов */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.3s ease-out;
+        }
+
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* задержки для последовательного появления */
+        .fade-in-up.delay-1 { transition-delay: 0.05s; }
+        .fade-in-up.delay-2 { transition-delay: 0.1s; }
+        .fade-in-up.delay-3 { transition-delay: 0.15s; }
+        .fade-in-up.delay-4 { transition-delay: 0.2s; }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="logo">
+        <div class="logo-heart"></div>
+        <div class="logo-title">Lovina</div>
+    </div>
+
+    <div class="header-right">
+        <div>{{ student_fio }}</div>
+        <div>{{ student_group }}</div>
+        <nav class="navbar">
+        {% if session.user_id %}
+            <a class="nav-link" href="{{ url_for('logout') }}">Выход</a>
+        {% else %}
+            <a class="nav-link" href="{{ url_for('login') }}">Войти</a>
+        {% endif %}
+    </nav>
+    </div>
+</header>
+
+<div class="landing-wrapper">
+
+    <!-- ЭКРАН 1:  -->
+    <section class="screen">
+        <div class="screen-inner hero-layout">
+            <div>
+                <h1 class="hero-title fade-in-up">Lovina</h1>
+                <div class="hero-tagline fade-in-up delay-1">
+                    Находи любовь, не выходя из дома.
+                </div>
+                <div class="hero-text fade-in-up delay-2">
+                    Пространство, где легко находить людей с похожими интересами.
+                    Никакого хаоса — только честный подбор и удобное взаимодействие, чтобы ты мог знакомиться с теми, кто тебе действительно подходит.
+                </div>
+            </div>
+
+            <div class="hero-image-box fade-in-up delay-3">
+                <img src="{{ url_for('static', filename='uploads/картинка1.png') }}"
+                    alt="Lovina"
+                    class="hero-image">
+            </div>
+        </div>
+    </section>
+
+    <!-- ЭКРАН 2: что такое Lovina -->
+    <section class="screen">
+        <div class="screen-inner about-layout">
+            <div>
+                <h2 class="section-title fade-in-up">Что такое Lovina?</h2>
+                <div class="section-text">
+                    <p class="fade-in-up delay-1">Lovina — это аккуратные анкеты, честные настройки поиска
+                        и возможность в любой момент скрыть себя от других пользователей.</p>
+                    <p class="fade-in-up delay-2">Ты сам(-а) решаешь, что показывать: имя, возраст, фото и короткое описание.
+                        Никаких лишних полей и сложных форм — только то, что действительно важно
+                        для знакомства.</p>
+                </div>
+            </div>
+
+            <div class="about-image-box fade-in-up delay-3">
+                <div class="phone-mock">
+                    <div class="phone-inner">
+                        <div class="phone-header">
+                            <span class="phone-app-name">Lovina</span>
+                            <span class="phone-typing">
+                                печатает
+                                <span class="dot"></span>
+                                <span class="dot"></span>
+                                <span class="dot"></span>
+                            </span>
+                        </div>
+                        <div class="phone-chat">
+                            <div class="chat-bubble chat-in">
+                                Привет! 👋
+                            </div>
+                            <div class="chat-bubble chat-out">
+                                Привет! Давай знакомиться 😊
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ЭКРАН 3: Возможности Lovina -->
+    <section class="screen">
+        <div class="screen-inner">
+            <h2 class="section-title fade-in-up">Возможности Lovina</h2>
+            
+            <div class="features-grid">
+                <div class="feature-row">
+                    <div class="feature-card fade-in-up delay-1">
+                        <div class="feature-image">
+                            <img src="{{ url_for('static', filename='uploads/картинка4.png') }}" alt="Точный подбор">
+                        </div>
+                        <div class="feature-content">
+                            <h3 class="feature-title">Точный подбор</h3>
+                            <p class="feature-text">
+                                Настрой параметры поиска — и увидишь только тех, кто подходит по возрасту и полу. Никаких случайных анкет.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="feature-card fade-in-up delay-2">
+                        <div class="feature-image">
+                            <img src="{{ url_for('static', filename='uploads/картинка6.png') }}" alt="Контроль анкеты">
+                        </div>
+                        <div class="feature-content">
+                            <h3 class="feature-title">Полный контроль анкеты</h3>
+                            <p class="feature-text">
+                                В один клик можно скрыть профиль из поиска или удалить анкету полностью. Никто не увидит тебя, если ты этого не хочешь.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-row">
+                    <div class="feature-card fade-in-up delay-3">
+                        <div class="feature-image">
+                            <img src="{{ url_for('static', filename='uploads/картинка7.png') }}" alt="Честные совпадения">
+                        </div>
+                        <div class="feature-content">
+                            <h3 class="feature-title">Честные совпадения</h3>
+                            <p class="feature-text">
+                                В выдаче только те, кто ищет именно твой пол. Так проще находить людей с подходящими ожиданиями.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="feature-card fade-in-up delay-4">
+                        <div class="feature-image">
+                            <img src="{{ url_for('static', filename='uploads/картинка3.png') }}" alt="Минимум данных">
+                        </div>
+                        <div class="feature-content">
+                            <h3 class="feature-title">Минимум данных</h3>
+                            <p class="feature-text">
+                                Имя, возраст, фото и пара фраз «о себе» — этого достаточно, чтобы начать знакомиться. Никаких паспортов и банковских карт.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<!-- закреплённые снизу кнопки -->
+<div class="sticky-authbar">
+    {% if session.user_id %}
+        <a href="{{ url_for('profile_view') }}" class="btn btn-primary">Моя анкета</a>
+        <a href="{{ url_for('search') }}" class="btn btn-outline">Поиск</a>
+    {% else %}
+        <a href="{{ url_for('login') }}" class="btn btn-primary">Войти</a>
+        <a href="{{ url_for('register') }}" class="btn btn-outline">Зарегистрироваться</a>
+    {% endif %}
+</div>
+
+<script>
+
+// Анимация появления и исчезновения при прокрутке
+function initScrollAnimations() {
+    const elements = document.querySelectorAll('.fade-in-up');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.classList.add('visible');
+                }, 100);
+            } else {
+                setTimeout(() => {
+                    entry.target.classList.remove('visible');
+                }, 100);
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -30px 0px'
+    });
+
+    elements.forEach(element => {
+        observer.observe(element);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    initScrollAnimations();
+});
+</script>
+
+</body>
+</html>
