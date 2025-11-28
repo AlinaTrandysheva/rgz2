@@ -3,7 +3,7 @@
 
 {% block content %}
 <h2 class="card-title">Моя анкета</h2>
-<p class="card-subtitle">Расскажи о себе, чтобы совпадения были точнее.</p>
+<p class="card-subtitle">{% if profile %}Обнови информацию о себе{% else %}Заполни анкету чтобы начать поиск{% endif %}</p>
 
 <form method="post" enctype="multipart/form-data">
     <div class="form-group">
@@ -71,26 +71,37 @@
     </div>
 
     <div class="form-group">
-        <label class="form-label">Фотография</label>
+        <label class="form-label">
+            Фотография {% if not profile %}*{% endif %}
+        </label>
+        
+        {% if profile and profile.photo_filename %}
+        <div style="margin-bottom: 10px;">
+            <img src="{{ url_for('static', filename='uploads/' ~ profile.photo_filename) }}" 
+                 style="width: 100px; height: 100px; border-radius: 16px; object-fit: cover;">
+            <div style="font-size: 12px; color: #666; margin-top: 4px;">
+                Текущее фото
+            </div>
+        </div>
+        {% endif %}
+        
         <input
             class="form-input"
             type="file"
             name="photo"
             accept=".png,.jpg,.jpeg,.gif"
+            {% if not profile %}required{% endif %}
         >
+        <p style="font-size:12px;color:#888;margin-top:4px;">
+            Разрешены JPG, PNG, GIF. Размер до 2 МБ.
+            {% if not profile %}<strong>Обязательное поле для создания анкеты</strong>{% endif %}
+        </p>
     </div>
 
-    {% if profile and profile.photo_filename %}
-        <div class="form-group">
-            <img
-                class="profile-photo"
-                src="{{ url_for('static', filename='uploads/' ~ profile.photo_filename) }}"
-            >
-        </div>
-    {% endif %}
-
     <div class="form-group">
-        <button type="submit" class="btn btn-primary">Сохранить анкету</button>
+        <button type="submit" class="btn btn-primary">
+            {% if profile %}Сохранить изменения{% else %}Создать анкету{% endif %}
+        </button>
     </div>
 </form>
 

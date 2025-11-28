@@ -1,4 +1,3 @@
-# app.py
 import os
 import sqlite3
 import re
@@ -192,17 +191,14 @@ def validate_age(age_str: str):
 def index():
     user = current_user()
     if user:
-        # Перенаправляем авторизованных на dashboard
         return redirect(url_for('dashboard'))
     else:
-        # Показываем лендинг неавторизованным
         return render_template("index.html")
 
 @app.route("/dashboard")
 @login_required
 def dashboard():
     user = current_user()
-    # Получаем симпатии для превью
     conn = get_db()
     matches = conn.execute("""
         SELECT p.* FROM profiles p
@@ -220,23 +216,20 @@ def dashboard():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        # 1) данные для учётки
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "").strip()
         password2 = request.form.get("password2", "").strip()
-
-        # 2) данные анкеты
         name = request.form.get("name", "").strip()
         age = request.form.get("age", "").strip()
         gender = request.form.get("gender")
         looking_for = request.form.get("looking_for")
         about = request.form.get("about", "").strip()
-
         file = request.files.get("photo")
 
         errors = []
+        photo_filename = None
+        filename = None
 
-        # валидация логина/пароля
         if not username or not USERNAME_RE.match(username):
             errors.append("Логин должен содержать только латинские буквы, цифры и ._-")
 
@@ -246,7 +239,6 @@ def register():
         if password != password2:
             errors.append("Пароли не совпадают")
 
-        # валидация анкеты
         if not name:
             errors.append("Имя не должно быть пустым")
 
@@ -260,14 +252,12 @@ def register():
         if gender not in ("M", "F") or looking_for not in ("M", "F"):
             errors.append("Укажите корректный пол и пол для поиска")
 
-        photo_filename = None
-        if file and file.filename:
-            if allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-            else:
-                errors.append("Недопустимый формат фотографии (разрешены: jpg, jpeg, png, gif)")
+        if not file or not file.filename:
+            errors.append("Фотография обязательна для заполнения")
+        elif not allowed_file(file.filename):
+            errors.append("Недопустимый формат фотографии")
         else:
-            filename = None 
+            filename = secure_filename(file.filename)
 
         if errors:
             for e in errors:
@@ -399,15 +389,22 @@ def edit_profile():
 
         photo_filename = profile["photo_filename"] if profile else None
         file = request.files.get("photo")
-        if file and file.filename:
-            if allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                filename = f"{user['id']}_{filename}"
-                path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                file.save(path)
-                photo_filename = filename
-            else:
+        
+        if not profile:
+            if not file or not file.filename:
+                errors.append("Для создания анкеты фотография обязательна")
+            elif file and file.filename and not allowed_file(file.filename):
                 errors.append("Фотография должна быть в формате: png, jpg, jpeg или gif.")
+        else:
+            if file and file.filename and not allowed_file(file.filename):
+                errors.append("Фотография должна быть в формате: png, jpg, jpeg или gif.")
+
+        if file and file.filename and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filename = f"{user['id']}_{filename}"
+            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(path)
+            photo_filename = filename
 
         if errors:
             for e in errors:
@@ -539,7 +536,6 @@ def search():
 
     conn = get_db()
     
-    # Получаем профили
     rows = conn.execute(f"""
         SELECT p.* FROM profiles p
         WHERE {where_clause}
@@ -570,6 +566,7 @@ def search():
         age_q=age_q,
         liked_user_ids=liked_user_ids  
     )
+
 # ЛАЙКИ И СООБЩЕНИЯ
 
 @app.route("/like/<int:user_id>", methods=["POST"])
@@ -578,7 +575,6 @@ def like_profile(user_id):
     current_user_id = session['user_id']
     conn = get_db()
     
-    # Проверяем, не лайкали ли уже
     existing_like = conn.execute(
         "SELECT * FROM likes WHERE from_user_id = ? AND to_user_id = ?",
         (current_user_id, user_id)
@@ -589,13 +585,11 @@ def like_profile(user_id):
         conn.close()
         return redirect(url_for('search'))
     
-    # Проверяем взаимный лайк
     mutual_like = conn.execute(
         "SELECT * FROM likes WHERE from_user_id = ? AND to_user_id = ?",
         (user_id, current_user_id)
     ).fetchone()
     
-    # Сохраняем лайк
     conn.execute(
         "INSERT INTO likes (from_user_id, to_user_id, created_at) VALUES (?, ?, ?)",
         (current_user_id, user_id, datetime.now())
@@ -632,7 +626,6 @@ def chat(user_id):
     current_user_id = session['user_id']
     conn = get_db()
     
-    # Проверяем взаимные лайки
     mutual_like = conn.execute("""
         SELECT * FROM likes 
         WHERE from_user_id = ? AND to_user_id = ?
@@ -657,7 +650,6 @@ def chat(user_id):
             conn.commit()
             return redirect(url_for('chat', user_id=user_id))
     
-    # Получаем историю сообщений
     messages = conn.execute("""
         SELECT m.*, u.username as from_username 
         FROM messages m 
